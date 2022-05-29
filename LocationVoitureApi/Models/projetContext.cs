@@ -19,7 +19,7 @@ namespace LocationVoitureApi.Models
         public virtual DbSet<Admin> Admins { get; set; } = null!;
         public virtual DbSet<Agence> Agences { get; set; } = null!;
         public virtual DbSet<Client> Clients { get; set; } = null!;
-        public virtual DbSet<Employeur> Employeurs { get; set; } = null!;
+        public virtual DbSet<Employer> Employers { get; set; } = null!;
         public virtual DbSet<Location> Locations { get; set; } = null!;
         public virtual DbSet<Marque> Marques { get; set; } = null!;
         public virtual DbSet<Voiture> Voitures { get; set; } = null!;
@@ -105,7 +105,7 @@ namespace LocationVoitureApi.Models
                     .HasColumnName("telephone");
             });
 
-            modelBuilder.Entity<Employeur>(entity =>
+            modelBuilder.Entity<Employer>(entity =>
             {
                 entity.ToTable("employeur", "mydb");
 
@@ -224,7 +224,7 @@ namespace LocationVoitureApi.Models
                     .HasMaxLength(45)
                     .HasColumnName("type");
 
-                entity.HasOne(d => d.IdmarqueNavigation)
+                entity.HasOne(d => d.marque)
                     .WithMany(p => p.Voitures)
                     .HasForeignKey(d => d.Idmarque)
                     .OnDelete(DeleteBehavior.ClientSetNull)

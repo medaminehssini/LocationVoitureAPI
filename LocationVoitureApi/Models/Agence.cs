@@ -7,13 +7,13 @@ namespace LocationVoitureApi.Models
     {
         public Agence()
         {
-            Employeurs = new HashSet<Employeur>();
+            Employeurs = new HashSet<Employer>();
         }
 
         public int Id { get; set; }
         public string? Nom { get; set; }
         public string? Adresse { get; set; }
 
-        public virtual ICollection<Employeur> Employeurs { get; set; }
+        public virtual ICollection<Employer> Employeurs { get; set; }
     }
 }

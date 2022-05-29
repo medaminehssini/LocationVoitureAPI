@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace LocationVoitureApi.Models
 {
-    public partial class Employeur
+    public partial class Employer
     {
-        public Employeur()
+        public Employer()
         {
             Locations = new HashSet<Location>();
         }

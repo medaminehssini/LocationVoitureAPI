@@ -13,7 +13,7 @@ namespace LocationVoitureApi.Models
         public int Idemployeur { get; set; }
 
         public virtual Client IdClientNavigation { get; set; } = null!;
-        public virtual Employeur IdemployeurNavigation { get; set; } = null!;
+        public virtual Employer IdemployeurNavigation { get; set; } = null!;
         public virtual Voiture VoitureMatriculeNavigation { get; set; } = null!;
     }
 }

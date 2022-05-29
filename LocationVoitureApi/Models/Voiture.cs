@@ -18,7 +18,7 @@ namespace LocationVoitureApi.Models
         public string? Photo { get; set; }
         public int Idmarque { get; set; }
 
-        public virtual Marque IdmarqueNavigation { get; set; } = null!;
+        public virtual Marque marque { get; set; } = null!;
         public virtual ICollection<Location> Locations { get; set; }
     }
 }
