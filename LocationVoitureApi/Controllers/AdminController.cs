@@ -85,27 +85,30 @@ namespace LocationVoitureApi.Controllers
             if (admin == null)
                return BadRequest("Login or password uncorrect");
 
-            var claims = new[]
+            List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Role,"admin") ,
                 new Claim(ClaimTypes.Email,admin.Email),
             };
+            createToken(claims);
 
             return Ok("fdsq");
         }
 
 
-        private string createToken (List<Claim> claim)
+        private string createToken (List<Claim> claims)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("Jwt:Token").Value);
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("Jwt:Token").Value));
             var cred = new SigningCredentials(key , SecurityAlgorithms.HmacSha512Signature);
 
             var token = new JwtSecurityToken(
-                claims:claim,
+                claims:claims,
                 expires: DateTime.Now.AddDays(2),
                 signingCredentials: cred);
 
-            return "";
+            var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return jwtToken;
         }
 
     }
