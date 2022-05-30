@@ -1,11 +1,14 @@
 ﻿using LocationVoitureApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace LocationVoitureApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles =("admin"))]
     public class AgenceController : ControllerBase
     {
         [HttpGet]
@@ -31,12 +34,14 @@ namespace LocationVoitureApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<List<Agence>>> addAdmin(Agence a)
+        public async Task<ActionResult<List<Agence>>> addAdmin([FromForm]Agence a)
         {
             using (var context = new projetContext())
             {
                 context.Agences.Add(a);
+
                 await context.SaveChangesAsync();
+
                 return Ok(context.Agences.ToList());
             }
 

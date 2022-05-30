@@ -9,6 +9,14 @@ namespace LocationVoitureApi.Controllers
     [ApiController]
     public class VoitureController : ControllerBase
     {
+        projetContext context;
+
+        public VoitureController (projetContext projetContext)
+        {
+            context = projetContext;
+
+        } 
+
         [HttpGet]
         public async Task<ActionResult<List<Voiture>>> getAll()
         {
@@ -71,6 +79,24 @@ namespace LocationVoitureApi.Controllers
                 await context.SaveChangesAsync();
                 return Ok(context.Voitures.ToList());
             }
+
+        }
+
+
+
+
+        [HttpGet("dispo")]
+        
+        public async Task<ActionResult<List<Voiture>>> getDispo()
+        {
+           
+            DateTime sqlFormattedDate = DateTime.Now;
+            var location = context.Locations.Where(x => x.DateDeb <= sqlFormattedDate & x.DateFin >= sqlFormattedDate ).Select(x => x.VoitureMatricule).ToArray();
+            var a = await context.Voitures.Where(x => ! location.Contains(x.Matricule)).ToListAsync();
+            if (a == null)
+                return NotFound("Voiture not found");
+            return Ok(a);
+            
 
         }
 

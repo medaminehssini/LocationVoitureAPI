@@ -13,7 +13,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 {
     option.TokenValidationParameters = new TokenValidationParameters()
     {
-        ValidateActor = true ,
+        ValidateActor = true,
         ValidateAudience = true ,
         ValidateLifetime = true ,
         ValidateIssuerSigningKey = true ,
@@ -24,21 +24,39 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 });
 
+
+builder.Services.AddSingleton<IUpload,Upload>();
+
 // Add services to the container.
 builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer(); 
 builder.Services.AddSwaggerGen( option => {
-    option.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
         Description ="Authorization with Bearer (bearer {token} ) ",
         In = ParameterLocation.Header,
         Name ="Authorization",
-        Type =SecuritySchemeType.ApiKey
+        Type =SecuritySchemeType.Http
     });
 
-    option.OperationFilter<SecurityRequirementsOperationFilter>();
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Id = "Bearer",
+                    Type = ReferenceType.SecurityScheme
+                }
+            },
+            new List<string>()
+        }
+    });
 });
 
 

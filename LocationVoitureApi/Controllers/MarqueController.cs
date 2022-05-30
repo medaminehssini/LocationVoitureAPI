@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using LocationVoitureApi.Models;
+using Microsoft.AspNetCore.Authorization;
+
 namespace LocationVoitureApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "admin")]
     public class MarqueController : ControllerBase
     {
         [HttpGet]
