@@ -99,6 +99,8 @@ namespace LocationVoitureApi.Models
                 entity.Property(e => e.Prenom)
                     .HasMaxLength(45)
                     .HasColumnName("prenom");
+                entity.Property(e => e.Password)
+                    .HasColumnName("password");
 
                 entity.Property(e => e.Telephone)
                     .HasMaxLength(45)

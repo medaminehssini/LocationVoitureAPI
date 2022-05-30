@@ -6,22 +6,25 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
+using LocationVoitureApi.Helpers;
 
 namespace LocationVoitureApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles ="admin")]
     public class AdminController : ControllerBase
     {
 
         private projetContext _context;
         private readonly IConfiguration configuration;
+        private readonly IUpload upload;
 
-        public AdminController(projetContext context , IConfiguration configuration)
+        public AdminController(projetContext context , IConfiguration configuration , IUpload upload)
         {
             _context = context;
             this.configuration = configuration;
+            this.upload = upload;
         }
 
         [HttpGet]
@@ -35,6 +38,7 @@ namespace LocationVoitureApi.Controllers
         {
 
             var a = await _context.Admins.FindAsync(id);
+          
             if (a == null) 
                 return NotFound("Admin not found"); 
             return Ok(a);
@@ -42,21 +46,63 @@ namespace LocationVoitureApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<List<Admin>>> addAdmin(Admin a)
+
+        public async Task<ActionResult<List<Admin>>> add([FromForm]AdminUpload a)
         {
 
-            _context.Admins.Add(a);
-            await _context.SaveChangesAsync();
-            return Ok(_context.Admins.ToList());
+
+            string s = upload.upload(a.Photo, "Images/Admin");
+
+            if (s != null)
+            {
+
+                Admin admin = new Admin();
+                admin.Photo = s;
+                admin.Nom = a.Nom;
+                admin.Email = a.Email;
+                admin.Password = a.Password;
+
+
+                _context.Admins.Add(admin);
+                await _context.SaveChangesAsync();
+                return Ok(_context.Admins.ToList());
+            }
+            return BadRequest();   
         }
 
 
         [HttpPut]
-        public async Task<ActionResult<Admin>> updateAdmin(Admin a)
+        public async Task<ActionResult<Admin>> update([FromForm]AdminUpload a)
         {
-            _context.Admins.Update(a);
-            await _context.SaveChangesAsync();
-            return Ok(a);
+
+            Admin admin = _context.Admins.Find(a);
+            if (admin != null)
+            {
+               
+             
+                admin.Nom = a.Nom;
+                admin.Email = a.Email;
+                admin.Password = a.Password;
+                string s = null;
+                
+                if (a.Photo != null)
+                {
+                     s = upload.upload(a.Photo, "Images/Admin");
+                    if(s != null)
+                    {
+                        admin.Photo = s;
+                    }
+                }
+                
+
+                _context.Admins.Update(admin);
+                await _context.SaveChangesAsync();
+                return Ok(a);
+            }
+            else
+                return NotFound("admin not found");
+
+          
         }
 
 
@@ -76,9 +122,9 @@ namespace LocationVoitureApi.Controllers
 
         }
 
-        [HttpPost("/login")]
+        [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<ActionResult<String>> login (UserLogin user)
+        public async Task<ActionResult<String>> login ([FromForm]UserLogin user)
         {
 
             Admin admin = _context.Admins.Where(a => a.Email == user.Email ).FirstOrDefault();
@@ -89,27 +135,16 @@ namespace LocationVoitureApi.Controllers
             {
                 new Claim(ClaimTypes.Role,"admin") ,
                 new Claim(ClaimTypes.Email,admin.Email),
+                new Claim(ClaimTypes.NameIdentifier,admin.Id.ToString()),
+
             };
-            createToken(claims);
+            
 
-            return Ok("fdsq");
+            return Ok(JWT.createToken(claims , configuration) );
         }
 
 
-        private string createToken (List<Claim> claims)
-        {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("Jwt:Token").Value));
-            var cred = new SigningCredentials(key , SecurityAlgorithms.HmacSha512Signature);
 
-            var token = new JwtSecurityToken(
-                claims:claims,
-                expires: DateTime.Now.AddDays(2),
-                signingCredentials: cred);
-
-            var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
-
-            return jwtToken;
-        }
 
     }
 }

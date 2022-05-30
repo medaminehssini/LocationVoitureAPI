@@ -17,6 +17,7 @@ namespace LocationVoitureApi.Models
         public string? Adresse { get; set; }
         public string? Telephone { get; set; }
         public string? Email { get; set; }
+        public string? Password { get; set; }
 
         public virtual ICollection<Location> Locations { get; set; }
     }
