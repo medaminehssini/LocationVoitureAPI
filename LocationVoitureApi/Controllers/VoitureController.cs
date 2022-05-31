@@ -12,15 +12,14 @@ namespace LocationVoitureApi.Controllers
         projetContext context;
 
 
-        public VoitureController (projetContext projetContext)
+        public VoitureController(projetContext projetContext)
         {
             context = projetContext;
-
         }
+
         [HttpGet]
         public async Task<ActionResult<List<Voiture>>> getAll()
         {
-            using (var context = new projetContext())
             {
                 return context.Voitures.Include("Locations").ToList();
             }
@@ -29,7 +28,6 @@ namespace LocationVoitureApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Voiture>> get(int id)
         {
-            using (var context = new projetContext())
             {
                 var a = await context.Voitures.FindAsync(id);
                 if (a == null)
@@ -41,7 +39,6 @@ namespace LocationVoitureApi.Controllers
         [HttpPost]
         public async Task<ActionResult<List<Voiture>>> addAdmin(Voiture a)
         {
-            using (var context = new projetContext())
             {
                 context.Voitures.Add(a);
                 await context.SaveChangesAsync();
@@ -53,7 +50,6 @@ namespace LocationVoitureApi.Controllers
         [HttpPut]
         public async Task<ActionResult<Voiture>> update(Voiture a)
         {
-            using (var context = new projetContext())
             {
                 context.Voitures.Update(a);
                 await context.SaveChangesAsync();
@@ -65,7 +61,6 @@ namespace LocationVoitureApi.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<List<Voiture>>> delete(int id)
         {
-            using (var context = new projetContext())
             {
                 var a = await context.Voitures.FindAsync(id);
                 if (a == null)
@@ -78,21 +73,16 @@ namespace LocationVoitureApi.Controllers
         }
 
 
-
         [HttpGet("dispo")]
-        
         public async Task<ActionResult<List<Voiture>>> getDispo()
         {
-           
             DateTime sqlFormattedDate = DateTime.Now;
-            var location = context.Locations.Where(x => x.DateDeb <= sqlFormattedDate & x.DateFin >= sqlFormattedDate ).Select(x => x.VoitureMatricule).ToArray();
-            var a = await context.Voitures.Where(x => ! location.Contains(x.Matricule)).ToListAsync();
+            var location = context.Locations.Where(x => x.DateDeb <= sqlFormattedDate & x.DateFin >= sqlFormattedDate)
+                .Select(x => x.VoitureMatricule).ToArray();
+            var a = await context.Voitures.Where(x => !location.Contains(x.Matricule)).ToListAsync();
             if (a == null)
                 return NotFound("Voiture not found");
             return Ok(a);
-            
-
         }
-
     }
 }

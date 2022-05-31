@@ -1,11 +1,12 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace LocationVoitureApi.Migrations
 {
-    public partial class newdb : Migration
+    public partial class mydb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -17,12 +18,12 @@ namespace LocationVoitureApi.Migrations
                 schema: "mydb",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    nom = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: true),
-                    email = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: true),
-                    password = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: true),
-                    photo = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: true)
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    nom = table.Column<string>(type: "character varying(45)", maxLength: 45, nullable: true),
+                    email = table.Column<string>(type: "character varying(45)", maxLength: 45, nullable: true),
+                    password = table.Column<string>(type: "character varying(45)", maxLength: 45, nullable: true),
+                    photo = table.Column<string>(type: "character varying(45)", maxLength: 45, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -34,10 +35,10 @@ namespace LocationVoitureApi.Migrations
                 schema: "mydb",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    nom = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: true),
-                    adresse = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: true)
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    nom = table.Column<string>(type: "character varying(45)", maxLength: 45, nullable: true),
+                    adresse = table.Column<string>(type: "character varying(45)", maxLength: 45, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -49,15 +50,15 @@ namespace LocationVoitureApi.Migrations
                 schema: "mydb",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    nom = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: true),
-                    prenom = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: true),
-                    cin = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: true),
-                    adresse = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    telephone = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: true),
-                    email = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: true),
-                    password = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    nom = table.Column<string>(type: "character varying(45)", maxLength: 45, nullable: true),
+                    prenom = table.Column<string>(type: "character varying(45)", maxLength: 45, nullable: true),
+                    cin = table.Column<string>(type: "character varying(45)", maxLength: 45, nullable: true),
+                    adresse = table.Column<string>(type: "text", nullable: true),
+                    telephone = table.Column<string>(type: "character varying(45)", maxLength: 45, nullable: true),
+                    email = table.Column<string>(type: "character varying(45)", maxLength: 45, nullable: true),
+                    password = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -69,9 +70,9 @@ namespace LocationVoitureApi.Migrations
                 schema: "mydb",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    nom = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: true)
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    nom = table.Column<string>(type: "character varying(45)", maxLength: 45, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -83,12 +84,12 @@ namespace LocationVoitureApi.Migrations
                 schema: "mydb",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    nom = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: true),
-                    photo = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: true),
-                    password = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: true),
-                    idagence = table.Column<int>(type: "int", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    nom = table.Column<string>(type: "character varying(45)", maxLength: 45, nullable: true),
+                    photo = table.Column<string>(type: "character varying(45)", maxLength: 45, nullable: true),
+                    password = table.Column<string>(type: "character varying(45)", maxLength: 45, nullable: true),
+                    idagence = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -106,13 +107,13 @@ namespace LocationVoitureApi.Migrations
                 schema: "mydb",
                 columns: table => new
                 {
-                    matricule = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    poids = table.Column<int>(type: "int", nullable: true),
-                    prix = table.Column<decimal>(type: "decimal(18,4)", nullable: true),
-                    modele = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: true),
-                    type = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: true),
-                    photo = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: true),
-                    idmarque = table.Column<int>(type: "int", nullable: false)
+                    matricule = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    poids = table.Column<int>(type: "integer", nullable: true),
+                    prix = table.Column<decimal>(type: "numeric(18,4)", nullable: true),
+                    modele = table.Column<string>(type: "character varying(45)", maxLength: 45, nullable: true),
+                    type = table.Column<string>(type: "character varying(45)", maxLength: 45, nullable: true),
+                    photo = table.Column<string>(type: "character varying(45)", maxLength: 45, nullable: true),
+                    idmarque = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -130,13 +131,13 @@ namespace LocationVoitureApi.Migrations
                 schema: "mydb",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     date_deb = table.Column<DateTime>(type: "date", nullable: true),
                     date_fin = table.Column<DateTime>(type: "date", nullable: true),
-                    idClient = table.Column<int>(type: "int", nullable: false),
-                    voiture_matricule = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    idemployeur = table.Column<int>(type: "int", nullable: false)
+                    idClient = table.Column<int>(type: "integer", nullable: false),
+                    voiture_matricule = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    idemployeur = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -166,8 +167,7 @@ namespace LocationVoitureApi.Migrations
                 schema: "mydb",
                 table: "client",
                 column: "cin",
-                unique: true,
-                filter: "[cin] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "fk_employeur_agence1_idx",

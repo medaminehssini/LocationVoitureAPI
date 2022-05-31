@@ -17,7 +17,8 @@ namespace LocationVoitureApi.Controllers
         private readonly IWebHostEnvironment hostEnvironment;
         private readonly IUpload upload;
 
-        public EmployerController(projetContext context, IConfiguration configuration, IWebHostEnvironment hostEnvironment, IUpload upload)
+        public EmployerController(projetContext context, IConfiguration configuration,
+            IWebHostEnvironment hostEnvironment, IUpload upload)
         {
             _context = context;
             _configuration = configuration;
@@ -29,9 +30,8 @@ namespace LocationVoitureApi.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Employer>>> getAll()
         {
-            using (var context = new projetContext())
             {
-                return context.Employers.ToList();
+                return _context.Employers.ToList();
             }
         }
 
@@ -50,15 +50,12 @@ namespace LocationVoitureApi.Controllers
                 return Ok(a);
 
 
-
             return BadRequest();
-
         }
 
         [HttpPost]
         public async Task<ActionResult<List<Employer>>> add([FromForm] EmployerUpload a)
         {
-
             string s = upload.upload(a.photo, "Images/Employer");
 
             if (s != null)
@@ -71,16 +68,12 @@ namespace LocationVoitureApi.Controllers
                 employer.Nom = a.Nom;
 
 
-
                 _context.Employers.Add(employer);
                 await _context.SaveChangesAsync();
                 return Ok(_context.Employers.ToList());
             }
 
             return BadRequest("R");
-
-
-
         }
 
 
@@ -89,16 +82,16 @@ namespace LocationVoitureApi.Controllers
         public async Task<ActionResult<Employer>> update([FromForm] EmployerUpload a)
         {
             bool verif = false;
-            if(a.photo != null)
+            if (a.photo != null)
                 verif = true;
             string s = upload.upload(a.photo, "Images/Employer");
-            if(s != null)
+            if (s != null)
             {
                 var role = this.User.FindFirstValue(ClaimTypes.Role);
                 var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 Employer employer = new Employer();
                 employer.Id = a.Id;
-                if(verif)
+                if (verif)
                     employer.Photo = s;
                 employer.Idagence = a.Idagence;
                 employer.Password = a.Password;
@@ -112,51 +105,43 @@ namespace LocationVoitureApi.Controllers
                     return Ok(a);
                 }
             }
-            return BadRequest(); 
-        }
 
+            return BadRequest();
+        }
 
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<List<Employer>>> delete(int id)
         {
-            using (var context = new projetContext())
             {
-
-                var a = await context.Employers.FindAsync(id);
+                var a = await _context.Employers.FindAsync(id);
                 if (a == null)
                     return NotFound("Clienr not found");
-                
-                context.Employers.Remove(a);
-                await context.SaveChangesAsync();
-                return Ok(context.Employers.ToList());
-            }
 
+                _context.Employers.Remove(a);
+                await _context.SaveChangesAsync();
+                return Ok(_context.Employers.ToList());
+            }
         }
 
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<ActionResult<String>> login([FromForm] UserLogin user)
         {
-
-            Employer employer = _context.Employers.Where(a => a.Nom == user.Email & a.Password == user.Password).FirstOrDefault();
+            Employer employer = _context.Employers.Where(a => a.Nom == user.Email & a.Password == user.Password)
+                .FirstOrDefault();
             if (employer == null)
                 return BadRequest("Login or password uncorrect");
 
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Role,"employer") ,
-                new Claim(ClaimTypes.Email,employer.Nom),
-                new Claim(ClaimTypes.NameIdentifier,employer.Id.ToString()),
-
+                new Claim(ClaimTypes.Role, "employer"),
+                new Claim(ClaimTypes.Email, employer.Nom),
+                new Claim(ClaimTypes.NameIdentifier, employer.Id.ToString()),
             };
 
 
             return Ok(JWT.createToken(claims, _configuration));
         }
-
-        
-
-
     }
 }
