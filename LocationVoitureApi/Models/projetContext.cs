@@ -7,14 +7,19 @@ namespace LocationVoitureApi.Models
 {
     public partial class projetContext : DbContext
     {
-        public projetContext()
+        IConfiguration _configuration;
+
+        public projetContext(IConfiguration configuration)
         {
+            this._configuration = configuration;
         }
 
-        public projetContext(DbContextOptions<projetContext> options)
+        public projetContext(DbContextOptions<projetContext> options, IConfiguration configuration)
             : base(options)
         {
+            this._configuration = configuration;
         }
+
 
         public virtual DbSet<Admin> Admins { get; set; } = null!;
         public virtual DbSet<Agence> Agences { get; set; } = null!;
@@ -28,8 +33,11 @@ namespace LocationVoitureApi.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-               //warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=SQL8002.site4now.net;Initial Catalog=db_a87c2b_locapi;User Id=db_a87c2b_locapi_admin;Password=12345678MED");
+                String connection = _configuration.GetSection("Connection:string").Value;
+                //warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                //optionsBuilder.UseSqlServer(@"database=projet;server=LENOVO242\SQL2K14;User ID=sa;pwd=pass");
+                optionsBuilder.UseNpgsql(
+                    connection);
             }
         }
 
